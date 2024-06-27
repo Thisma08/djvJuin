@@ -1,0 +1,197 @@
+# depslib dependency file v1.0
+1701599730 source:/home/mathis/Bureau/Snake++/main.cpp
+	"Game.h"
+
+1701603567 /home/mathis/Bureau/Snake++/include/Game.h
+	<memory>
+	<SFML/Graphics/RenderWindow.hpp>
+	"AssetManager.h"
+	"StateManager.h"
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/RenderWindow.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/RenderTarget.hpp>
+	<SFML/Graphics/Image.hpp>
+	<SFML/Window/Window.hpp>
+	<string>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Export.hpp
+	<SFML/Config.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Config.hpp
+	"TargetConditionals.h"
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/RenderTarget.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Color.hpp>
+	<SFML/Graphics/Rect.hpp>
+	<SFML/Graphics/View.hpp>
+	<SFML/Graphics/Transform.hpp>
+	<SFML/Graphics/BlendMode.hpp>
+	<SFML/Graphics/RenderStates.hpp>
+	<SFML/Graphics/PrimitiveType.hpp>
+	<SFML/Graphics/Vertex.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Color.hpp
+	<SFML/Graphics/Export.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Rect.hpp
+	<SFML/System/Vector2.hpp>
+	<algorithm>
+	<SFML/Graphics/Rect.inl>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Vector2.hpp
+	<SFML/System/Vector2.inl>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Vector2.inl
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Rect.inl
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/View.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Rect.hpp>
+	<SFML/Graphics/Transform.hpp>
+	<SFML/System/Vector2.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Transform.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Rect.hpp>
+	<SFML/System/Vector2.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/BlendMode.hpp
+	<SFML/Graphics/Export.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/RenderStates.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/BlendMode.hpp>
+	<SFML/Graphics/Transform.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/PrimitiveType.hpp
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Vertex.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Color.hpp>
+	<SFML/System/Vector2.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/NonCopyable.hpp
+	<SFML/System/Export.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Export.hpp
+	<SFML/Config.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Image.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Color.hpp>
+	<SFML/Graphics/Rect.hpp>
+	<string>
+	<vector>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/Window.hpp
+	<SFML/Window/ContextSettings.hpp>
+	<SFML/Window/GlResource.hpp>
+	<SFML/Window/WindowBase.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/ContextSettings.hpp
+	<SFML/Config.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/GlResource.hpp
+	<SFML/Window/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/Export.hpp
+	<SFML/Config.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/WindowBase.hpp
+	<SFML/Window/Cursor.hpp>
+	<SFML/Window/Export.hpp>
+	<SFML/Window/VideoMode.hpp>
+	<SFML/Window/Vulkan.hpp>
+	<SFML/Window/WindowHandle.hpp>
+	<SFML/Window/WindowStyle.hpp>
+	<SFML/System/Clock.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/String.hpp>
+	<SFML/System/Vector2.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/Cursor.hpp
+	<SFML/Window/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Vector2.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/VideoMode.hpp
+	<SFML/Window/Export.hpp>
+	<vector>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/Vulkan.hpp
+	<SFML/Window/Export.hpp>
+	<SFML/Window/WindowHandle.hpp>
+	<vector>
+	<cstddef>
+	<stdint.h>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/WindowHandle.hpp
+	<SFML/Config.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Window/WindowStyle.hpp
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Clock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Time.hpp
+	<SFML/System/Export.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/String.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Utf.hpp>
+	<iterator>
+	<locale>
+	<string>
+	<SFML/System/String.inl>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Utf.hpp
+	<SFML/Config.hpp>
+	<algorithm>
+	<locale>
+	<string>
+	<cstdlib>
+	<SFML/System/Utf.inl>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/Utf.inl
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/System/String.inl
+
+1701605819 /home/mathis/Bureau/Snake++/include/AssetManager.h
+	<map>
+	<memory>
+	<string>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/Graphics/Font.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Texture.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Image.hpp>
+	<SFML/Window/GlResource.hpp>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Font.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Glyph.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/Graphics/Rect.hpp>
+	<map>
+	<string>
+	<vector>
+
+1699094177 /home/mathis/SFML-2.6.1/include/SFML/Graphics/Glyph.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Rect.hpp>
+
+1701605631 /home/mathis/Bureau/Snake++/include/StateManager.h
+	<stack>
+	<memory>
+	"State.h"
+
+1701596371 /home/mathis/Bureau/Snake++/include/State.h
+	<SFML/System/Time.hpp>
+

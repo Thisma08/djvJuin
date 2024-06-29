@@ -3,8 +3,25 @@
 
 #include <SFML/Window/Event.hpp>
 
-GameOver::GameOver(std::shared_ptr<Context> &context) : context(context), isRetryButtonSelected(true), isRetryButtonPressed(false), isExitButtonSelected(false), isExitButtonPressed(false)
+GameOver::GameOver(std::shared_ptr<Context> &context)
+    : context(context),
+      isRetryButtonSelected(true),
+      isRetryButtonPressed(false),
+      isExitButtonSelected(false),
+      isExitButtonPressed(false)
 {
+    if (!buttonChangeBuffer.loadFromFile("../../assets/sounds/button_change.wav"))
+    {
+        throw std::runtime_error("Failed to load button_change.wav");
+    }
+
+    if (!selectBuffer.loadFromFile("../../assets/sounds/select.wav"))
+    {
+        throw std::runtime_error("Failed to load select.wav");
+    }
+
+    buttonChangeSound.setBuffer(buttonChangeBuffer);
+    selectSound.setBuffer(selectBuffer);
 }
 
 GameOver::~GameOver()
@@ -13,8 +30,17 @@ GameOver::~GameOver()
 
 void GameOver::Init()
 {
-    // Titre
-    gameOverTitle.setFont(context->assets->GetFont(MAIN_FONT));
+    auto& assetManager = Engine::AssetManager::GetInstance();
+
+    // Add texture
+    assetManager.AddTexture(GRASS, "../../assets/textures/grass.png", true);
+
+    // Apply textures
+    grass.setTexture(assetManager.GetTexture(GRASS));
+    grass.setTextureRect(context->window->getViewport(context->window->getDefaultView()));
+
+    // Title
+    gameOverTitle.setFont(assetManager.GetFont(MAIN_FONT));
     gameOverTitle.setString("Game Over");
     gameOverTitle.setCharacterSize(100);
 
@@ -22,8 +48,8 @@ void GameOver::Init()
     gameOverTitle.setOrigin(gameOverBounds.width / 2, gameOverBounds.height / 2);
     gameOverTitle.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 - 200.f);
 
-    // Bouton "Réessayer"
-    retryButton.setFont(context->assets->GetFont(MAIN_FONT));
+    // Retry Button
+    retryButton.setFont(assetManager.GetFont(MAIN_FONT));
     retryButton.setString("Retry");
     retryButton.setCharacterSize(50);
 
@@ -31,8 +57,8 @@ void GameOver::Init()
     retryButton.setOrigin(retryBounds.width / 2, retryBounds.height / 2);
     retryButton.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 - 25.f);
 
-    // Bouton "Quitter"
-    exitButton.setFont(context->assets->GetFont(MAIN_FONT));
+    // Exit Button
+    exitButton.setFont(assetManager.GetFont(MAIN_FONT));
     exitButton.setString("Quit");
     exitButton.setCharacterSize(50);
 
@@ -41,13 +67,13 @@ void GameOver::Init()
     exitButton.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 + 50.f);
 }
 
-// Traitement de l'input du joueur
+// Process player input
 void GameOver::ProcessInput()
 {
     sf::Event event;
     while (context->window->pollEvent(event))
     {
-        // Si fenêtre quittée => Vider la pile des états
+        // If window closed, clear the states stack
         if (event.type == sf::Event::Closed)
         {
             context->states->PopAll();
@@ -56,55 +82,58 @@ void GameOver::ProcessInput()
         {
             switch (event.key.code)
             {
-            // Sélection bouton
-            case sf::Keyboard::Up:
-            {
-                if (!isRetryButtonSelected)
+                // Button selection
+                case sf::Keyboard::Up:
                 {
-                    isRetryButtonSelected = true;
-                    isExitButtonSelected = false;
+                    buttonChangeSound.play();
+                    if (!isRetryButtonSelected)
+                    {
+                        isRetryButtonSelected = true;
+                        isExitButtonSelected = false;
+                    }
+                    break;
                 }
-                break;
-            }
-            case sf::Keyboard::Down:
-            {
-                if (!isExitButtonSelected)
+                case sf::Keyboard::Down:
                 {
-                    isRetryButtonSelected = false;
-                    isExitButtonSelected = true;
+                    buttonChangeSound.play();
+                    if (!isExitButtonSelected)
+                    {
+                        isRetryButtonSelected = false;
+                        isExitButtonSelected = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case sf::Keyboard::Return:
-            {
-                // Pressage bouton
-                isRetryButtonPressed = false;
-                isExitButtonPressed = false;
+                case sf::Keyboard::Return:
+                {
+                    selectSound.play();
+                    // Button press
+                    isRetryButtonPressed = false;
+                    isExitButtonPressed = false;
 
-                if (isRetryButtonSelected)
-                {
-                    isRetryButtonPressed = true;
-                }
-                else
-                {
-                    isExitButtonPressed = true;
-                }
+                    if (isRetryButtonSelected)
+                    {
+                        isRetryButtonPressed = true;
+                    }
+                    else
+                    {
+                        isExitButtonPressed = true;
+                    }
 
-                break;
-            }
-            default:
-            {
-                break;
-            }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
         }
     }
 }
 
-// Maj de l'écran
+// Update screen
 void GameOver::Update(const sf::Time &deltaTime)
 {
-    // Changement de couleur des boutons en fct du choix
+    // Change button colors based on selection
     if (isRetryButtonSelected)
     {
         retryButton.setFillColor(sf::Color::White);
@@ -116,23 +145,23 @@ void GameOver::Update(const sf::Time &deltaTime)
         retryButton.setFillColor(sf::Color::Black);
     }
 
-    // Bouton "Réessayer" pressé
+    // If retry button pressed
     if (isRetryButtonPressed)
     {
-        // Retour au gameplay
+        // Return to gameplay
         context->states->Add(std::make_unique<Gameplay>(context), true);
     }
-    // Bouton "Quitter" pressé
+    // If exit button pressed
     else if (isExitButtonPressed)
     {
         context->states->PopAll();
     }
 }
 
-// Dessiner les éléments
+// Draw elements
 void GameOver::Draw()
 {
-    context->window->clear(sf::Color(18, 161, 5));
+    context->window->draw(grass);
     context->window->draw(gameOverTitle);
     context->window->draw(retryButton);
     context->window->draw(exitButton);

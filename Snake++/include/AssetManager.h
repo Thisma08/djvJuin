@@ -13,8 +13,12 @@ namespace Engine
     class AssetManager
     {
     public:
-        AssetManager();
-        ~AssetManager();
+        // Deleted copy constructor and assignment operator to enforce Singleton property
+        AssetManager(const AssetManager&) = delete;
+        AssetManager& operator=(const AssetManager&) = delete;
+
+        // Static method to get the single instance of the class
+        static AssetManager& GetInstance();
 
         void AddTexture(int id, const std::string &filePath, bool wantRepeated = false);
         void AddFont(int id, const std::string &filePath);
@@ -23,6 +27,10 @@ namespace Engine
         const sf::Font &GetFont(int id) const;
 
     private:
+        // Private constructor and destructor
+        AssetManager();
+        ~AssetManager();
+
         std::map<int, std::unique_ptr<sf::Texture>> textures;
         std::map<int, std::unique_ptr<sf::Font>> fonts;
     };

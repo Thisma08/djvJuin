@@ -1,6 +1,8 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#pragma once
+
 #include <list>
 
 #include <SFML/Graphics/Texture.hpp>
@@ -8,6 +10,8 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+
+#include "SnakeObserver.h"
 
 class Snake : public sf::Drawable
 {
@@ -23,10 +27,22 @@ public:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+    void addObserver(SnakeObserver* observer) {
+        observers.push_back(observer);
+    }
+
+    void notifyObserversEatFood() {
+        for (auto observer : observers) {
+            observer->notifyEatFood();
+        }
+    }
+
 private:
     std::list<sf::Sprite> body;
     std::list<sf::Sprite>::iterator head;
     std::list<sf::Sprite>::iterator tail;
+
+    std::list<SnakeObserver*> observers;
 };
 
 #endif // SNAKE_H

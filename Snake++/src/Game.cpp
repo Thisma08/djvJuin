@@ -1,12 +1,18 @@
-#include <SFML/Graphics/CircleShape.hpp>
-
 #include "Game.h"
 #include "MainMenu.h"
 
+// Initialize the static member
+Game& Game::GetInstance()
+{
+    static Game instance;
+    return instance;
+}
+
+// Private constructor
 Game::Game() : context(std::make_shared<Context>())
 {
     // Création de la fenêtre + faire apparaître le menu principal
-    context->window->create(sf::VideoMode(1920, 1056), "Snek", sf::Style::Close);
+    context->window->create(sf::VideoMode(1920, 1024), "Snake++", sf::Style::Close);
     context->states->Add(std::make_unique<MainMenu>(context));
 }
 
@@ -16,9 +22,6 @@ Game::~Game()
 
 void Game::Run()
 {
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
     sf::Clock clock;
     sf::Time timeSinceLastFrame = sf::Time::Zero;
 

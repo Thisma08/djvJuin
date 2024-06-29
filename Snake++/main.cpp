@@ -2,8 +2,6 @@
 
 int main()
 {
-    Game game;
-    game.Run();
-
+    Game::GetInstance().Run();
     return 0;
 }

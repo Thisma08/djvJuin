@@ -3,8 +3,25 @@
 
 #include <SFML/Window/Event.hpp>
 
-MainMenu::MainMenu(std::shared_ptr<Context> &context) : context(context), isPlayButtonSelected(true), isPlayButtonPressed(false), isExitButtonSelected(false), isExitButtonPressed(false)
+MainMenu::MainMenu(std::shared_ptr<Context> &context)
+    : context(context),
+      isPlayButtonSelected(true),
+      isPlayButtonPressed(false),
+      isExitButtonSelected(false),
+      isExitButtonPressed(false)
 {
+    if (!buttonChangeBuffer.loadFromFile("../../assets/sounds/button_change.wav"))
+    {
+        throw std::runtime_error("Failed to load button_change.wav");
+    }
+
+    if (!selectBuffer.loadFromFile("../../assets/sounds/select.wav"))
+    {
+        throw std::runtime_error("Failed to load select.wav");
+    }
+
+    buttonChangeSound.setBuffer(buttonChangeBuffer);
+    selectSound.setBuffer(selectBuffer);
 }
 
 MainMenu::~MainMenu()
@@ -13,11 +30,20 @@ MainMenu::~MainMenu()
 
 void MainMenu::Init()
 {
-    // Ajouter police
-    context->assets->AddFont(MAIN_FONT, "../../assets/fonts/AkaashNormal.ttf");
+    auto& assetManager = Engine::AssetManager::GetInstance();
 
-    // Titre
-    gameTitle.setFont(context->assets->GetFont(MAIN_FONT));
+    // Add font
+    assetManager.AddFont(MAIN_FONT, "../../assets/fonts/AkaashNormal.ttf");
+
+    // Add texture
+    assetManager.AddTexture(GRASS, "../../assets/textures/grass.png", true);
+
+    // Apply textures
+    grass.setTexture(assetManager.GetTexture(GRASS));
+    grass.setTextureRect(context->window->getViewport(context->window->getDefaultView()));
+
+    // Title
+    gameTitle.setFont(assetManager.GetFont(MAIN_FONT));
     gameTitle.setString("SNAKE++");
     gameTitle.setCharacterSize(300);
 
@@ -25,8 +51,8 @@ void MainMenu::Init()
     gameTitle.setOrigin(titleBounds.width / 2, titleBounds.height / 2);
     gameTitle.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 - 300.f);
 
-    // Bouton "Jouer"
-    playButton.setFont(context->assets->GetFont(MAIN_FONT));
+    // Play Button
+    playButton.setFont(assetManager.GetFont(MAIN_FONT));
     playButton.setString("Play");
     playButton.setCharacterSize(50);
 
@@ -34,8 +60,8 @@ void MainMenu::Init()
     playButton.setOrigin(playBounds.width / 2, playBounds.height / 2);
     playButton.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 - 25.f);
 
-    // Bouton "Quitter"
-    exitButton.setFont(context->assets->GetFont(MAIN_FONT));
+    // Exit Button
+    exitButton.setFont(assetManager.GetFont(MAIN_FONT));
     exitButton.setString("Quit");
     exitButton.setCharacterSize(50);
 
@@ -44,7 +70,7 @@ void MainMenu::Init()
     exitButton.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2 + 50.f);
 }
 
-// Traitement de l'input du joueur
+// Process player input
 void MainMenu::ProcessInput()
 {
     sf::Event event;
@@ -56,57 +82,60 @@ void MainMenu::ProcessInput()
         }
         else if (event.type == sf::Event::KeyPressed)
         {
-            // Selection bouton
+            // Button selection
             switch (event.key.code)
             {
-            case sf::Keyboard::Up:
-            {
-                if (!isPlayButtonSelected)
+                case sf::Keyboard::Up:
                 {
-                    isPlayButtonSelected = true;
-                    isExitButtonSelected = false;
+                    buttonChangeSound.play();
+                    if (!isPlayButtonSelected)
+                    {
+                        isPlayButtonSelected = true;
+                        isExitButtonSelected = false;
+                    }
+                    break;
                 }
-                break;
-            }
-            case sf::Keyboard::Down:
-            {
-                if (!isExitButtonSelected)
+                case sf::Keyboard::Down:
                 {
-                    isPlayButtonSelected = false;
-                    isExitButtonSelected = true;
+                    buttonChangeSound.play();
+                    if (!isExitButtonSelected)
+                    {
+                        isPlayButtonSelected = false;
+                        isExitButtonSelected = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case sf::Keyboard::Return:
-            {
-                // Pressage bouton
-                isPlayButtonPressed = false;
-                isExitButtonPressed = false;
+                case sf::Keyboard::Return:
+                {
+                    selectSound.play();
+                    // Button press
+                    isPlayButtonPressed = false;
+                    isExitButtonPressed = false;
 
-                if (isPlayButtonSelected)
-                {
-                    isPlayButtonPressed = true;
-                }
-                else
-                {
-                    isExitButtonPressed = true;
-                }
+                    if (isPlayButtonSelected)
+                    {
+                        isPlayButtonPressed = true;
+                    }
+                    else
+                    {
+                        isExitButtonPressed = true;
+                    }
 
-                break;
-            }
-            default:
-            {
-                break;
-            }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
         }
     }
 }
 
-// Maj de l'écran
+// Update screen
 void MainMenu::Update(const sf::Time &deltaTime)
 {
-    // Changement de couleur des boutons en fct du choix
+    // Change button colors based on selection
     if (isPlayButtonSelected)
     {
         playButton.setFillColor(sf::Color::White);
@@ -118,25 +147,24 @@ void MainMenu::Update(const sf::Time &deltaTime)
         playButton.setFillColor(sf::Color::Black);
     }
 
-    // Bouton "Jouer" pressé
+    // If play button pressed
     if (isPlayButtonPressed)
     {
         context->states->Add(std::make_unique<Gameplay>(context), true);
     }
-    // Bouton "Quitter" pressé
+    // If exit button pressed
     else if (isExitButtonPressed)
     {
         context->states->PopAll();
     }
 }
 
-// Dessiner les éléments
+// Draw elements
 void MainMenu::Draw()
 {
-    context->window->clear(sf::Color(18, 161, 5));
+    context->window->draw(grass);
     context->window->draw(gameTitle);
     context->window->draw(playButton);
     context->window->draw(exitButton);
     context->window->display();
 }
-

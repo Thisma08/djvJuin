@@ -3,7 +3,9 @@
 
 #include <memory>
 
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Audio.hpp>
 
 #include "State.h"
 #include "Game.h"
@@ -20,6 +22,8 @@ public:
     void Draw() override;
 
 private:
+    sf::Sprite grass;
+
     std::shared_ptr<Context> context;
     sf::Text gameOverTitle;
     sf::Text retryButton;
@@ -30,6 +34,12 @@ private:
 
     bool isExitButtonSelected;
     bool isExitButtonPressed;
+
+    sf::SoundBuffer buttonChangeBuffer;
+    sf::Sound buttonChangeSound;
+
+    sf::SoundBuffer selectBuffer;
+    sf::Sound selectSound;
 };
 
 #endif // GAMEOVER_H

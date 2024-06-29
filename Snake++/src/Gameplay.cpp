@@ -4,12 +4,33 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include <stdexcept>
 #include <stdlib.h>
 #include <time.h>
 
 Gameplay::Gameplay(std::shared_ptr<Context> &context) : context(context), score(0), snakeDirection({32.f, 0.f}), elapsedTime(sf::Time::Zero), isPaused(false)
 {
     srand(time(nullptr));
+
+    if (!gameOverBuffer.loadFromFile("../../assets/sounds/game_over.wav"))
+    {
+        throw std::runtime_error("Failed to load game_over.wav");
+    }
+
+    if (!eatBuffer.loadFromFile("../../assets/sounds/eat.wav"))
+    {
+        throw std::runtime_error("Failed to load eat.wav");
+    }
+
+    if (!selectBuffer.loadFromFile("../../assets/sounds/select.wav"))
+    {
+        throw std::runtime_error("Failed to load select.wav");
+    }
+
+    // Set sound buffers to sounds
+    gameOverSound.setBuffer(gameOverBuffer);
+    eatSound.setBuffer(eatBuffer);
+    selectSound.setBuffer(selectBuffer);
 }
 
 Gameplay::~Gameplay()
@@ -18,19 +39,21 @@ Gameplay::~Gameplay()
 
 void Gameplay::Init()
 {
-    // Ajout textures
-    context->assets->AddTexture(GRASS, "../../assets/textures/grass.png", true);
-    context->assets->AddTexture(FOOD, "../../assets/textures/food.png");
-    context->assets->AddTexture(WALL, "../../assets/textures/wall.png", true);
-    context->assets->AddTexture(SNAKE, "../../assets/textures/snake.png");
+    auto& assetManager = Engine::AssetManager::GetInstance();
 
-    // Application textures
-    grass.setTexture(context->assets->GetTexture(GRASS));
+    // Add textures
+    assetManager.AddTexture(GRASS, "../../assets/textures/grass.png", true);
+    assetManager.AddTexture(FOOD, "../../assets/textures/food.png");
+    assetManager.AddTexture(WALL, "../../assets/textures/wall.png", true);
+    assetManager.AddTexture(SNAKE, "../../assets/textures/snake.png");
+
+    // Apply textures
+    grass.setTexture(assetManager.GetTexture(GRASS));
     grass.setTextureRect(context->window->getViewport(context->window->getDefaultView()));
 
     for (auto &wall : walls)
     {
-        wall.setTexture(context->assets->GetTexture(WALL));
+        wall.setTexture(assetManager.GetTexture(WALL));
     }
 
     walls[0].setTextureRect({0, 0, (int)context->window->getSize().x, 32});
@@ -41,19 +64,20 @@ void Gameplay::Init()
     walls[3].setTextureRect({0, 0, 32, (int)context->window->getSize().y});
     walls[3].setPosition(context->window->getSize().x - 32, 0);
 
-    food.setTexture(context->assets->GetTexture(FOOD));
+    food.setTexture(assetManager.GetTexture(FOOD));
     food.setPosition(context->window->getSize().x / 2, context->window->getSize().y / 2);
 
-    snake.Init(context->assets->GetTexture(SNAKE));
+    snake.Init(assetManager.GetTexture(SNAKE));
+    snake.addObserver(this);
 
-    // Affichage score
-    scoreText.setFont(context->assets->GetFont(MAIN_FONT));
+    // Display score
+    scoreText.setFont(assetManager.GetFont(MAIN_FONT));
     scoreText.setString("Score : " + std::to_string(score));
     scoreText.setPosition(37, 32);
     scoreText.setCharacterSize(40);
 }
 
-// Traitement de l'input du joueur
+// Process player input
 void Gameplay::ProcessInput()
 {
     sf::Event event;
@@ -81,6 +105,7 @@ void Gameplay::ProcessInput()
                 newDirection = {32.f, 0.f};
                 break;
             case sf::Keyboard::Escape:
+                selectSound.play();
                 context->states->Add(std::make_unique<PauseGame>(context));
                 break;
 
@@ -88,7 +113,7 @@ void Gameplay::ProcessInput()
                 break;
             }
 
-            // Vérification nouvelle direction valide
+            // Check for valid new direction
             if (std::abs(snakeDirection.x) != std::abs(newDirection.x) || std::abs(snakeDirection.y) != std::abs(newDirection.y))
             {
                 snakeDirection = newDirection;
@@ -107,39 +132,38 @@ void Gameplay::Update(const sf::Time &deltaTime)
         {
             for (auto &wall : walls)
             {
-                // Si joueur touche mur => game over
+                // If player hits wall, game over
                 if (snake.IsOn(wall))
                 {
+                    gameOverSound.play();
                     context->states->Add(std::make_unique<GameOver>(context), true);
                     break;
                 }
             }
 
-            // Si joueur touche nourriture
+            // If player hits food
             if (snake.IsOn(food))
             {
-                // Faire grandir le serpent
+                eatSound.play();
+                // Grow snake
                 snake.Grow(snakeDirection);
 
-                // Générer nourriture à un autre endroit
+                // Generate food at another position
                 int x = 0, y = 0;
-                x = std::clamp<int>(rand() % context->window->getSize().x, 32, context->window->getSize().x * 32);
-                y = std::clamp<int>(rand() % context->window->getSize().y, 32, context->window->getSize().y * 32);
+                x = std::clamp<int>(rand() % context->window->getSize().x, 64, (context->window->getSize().x - 1) * 32);
+                y = std::clamp<int>(rand() % context->window->getSize().y, 64, (context->window->getSize().y - 1) * 32);
 
                 food.setPosition(x, y);
 
-                // Augmenter score
-                score += 1;
-                scoreText.setString("Score : " + std::to_string(score));
-                scoreText.setCharacterSize(40);
+                notifyEatFood();
             }
             else
             {
-                // Bouger serpent
+                // Move snake
                 snake.Move(snakeDirection);
             }
 
-            // Si joueur collisione à lui-même => game over
+            // If player collides with itself, game over
             if (snake.IsSelfIntersecting())
             {
                 context->states->Add(std::make_unique<GameOver>(context), true);
@@ -150,7 +174,7 @@ void Gameplay::Update(const sf::Time &deltaTime)
     }
 }
 
-// Dessiner éléments
+// Draw elements
 void Gameplay::Draw()
 {
     context->window->clear();

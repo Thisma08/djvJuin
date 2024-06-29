@@ -12,8 +12,10 @@ PauseGame::~PauseGame()
 
 void PauseGame::Init()
 {
-    // Texte
-    pauseTitle.setFont(context->assets->GetFont(MAIN_FONT));
+    auto& assetManager = Engine::AssetManager::GetInstance();
+
+    // Text
+    pauseTitle.setFont(assetManager.GetFont(MAIN_FONT));
     pauseTitle.setString("Paused");
     pauseTitle.setCharacterSize(100);
     sf::FloatRect pauseBounds = pauseTitle.getLocalBounds();
@@ -34,16 +36,16 @@ void PauseGame::ProcessInput()
         {
             switch (event.key.code)
             {
-            // Si "esc" pressé => Quitter l'état actuel
-            case sf::Keyboard::Escape:
-            {
-                context->states->PopCurrent();
-                break;
-            }
-            default:
-            {
-                break;
-            }
+                // If "esc" pressed => Exit current state
+                case sf::Keyboard::Escape:
+                {
+                    context->states->PopCurrent();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
         }
     }
@@ -53,7 +55,7 @@ void PauseGame::Update(const sf::Time &deltaTime)
 {
 }
 
-// Dessiner les éléments
+// Draw elements
 void PauseGame::Draw()
 {
     context->window->draw(pauseTitle);
